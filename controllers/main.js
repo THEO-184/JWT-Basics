@@ -1,12 +1,12 @@
 require("dotenv").config();
-const customAPIError = require("../errors/custom-error");
+const { BadRequestError } = require("../errors");
 const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
 	const { username, password } = req.body;
 
 	if (!username || !password) {
-		throw new customAPIError("Please provide details", 400);
+		throw new BadRequestError("Please provide details");
 	}
 
 	const id = new Date().getTime();
@@ -19,8 +19,6 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-	console.log("user", req.user);
-
 	res.status(200).json({
 		msg: `Hello, ${req.user.username}`,
 		secret: `Here is your authorized data, your luck number is ${req.user.id}`,

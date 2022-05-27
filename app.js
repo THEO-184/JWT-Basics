@@ -10,8 +10,6 @@ const app = express();
 app.use(express.static("./public"));
 app.use(express.json());
 
-// routes
-//
 app.use("/api/v1", router);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
