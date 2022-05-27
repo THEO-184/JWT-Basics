@@ -1,21 +1,30 @@
+require("dotenv").config();
 const customAPIError = require("../errors/custom-error");
+const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
 	const { username, password } = req.body;
-	console.log(req.body);
 
-	// if (!username || !password) {
-	// 	throw new customAPIError("please provide password and username", 400);
-	// }
-	res.status(200).json({ msg: "Hello Welcome" });
+	if (!username || !password) {
+		throw new customAPIError("Please provide details", 400);
+	}
+
+	const id = new Date().getTime();
+	const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
+		expiresIn: "30d",
+	});
+	res
+		.status(200)
+		.json({ msg: `user token for ${username} successfully created`, token });
 };
 
 const dashboard = async (req, res) => {
-	const luckyNum = Math.floor(Math.random() * 100);
+	console.log("user", req.user);
 
-	res
-		.status(200)
-		.json({ msg: `Hello Theophilus, Here is your luck Number ${luckyNum}` });
+	res.status(200).json({
+		msg: `Hello, ${req.user.username}`,
+		secret: `Here is your authorized data, your luck number is ${req.user.id}`,
+	});
 };
 
 module.exports = { login, dashboard };
